@@ -1,0 +1,14 @@
+version: '3'
+services:
+  quake3:
+    build:
+      context: .
+      dockerfile: Dockerfile.quake3
+    ports:
+      - '27960:27960'
+  hl2:
+    build:
+      context: .
+      dockerfile: Dockerfile.hl2dm
+    ports:
+      - '27960:27960'

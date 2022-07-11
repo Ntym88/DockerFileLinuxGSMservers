@@ -1,0 +1,14 @@
+FROM gameservermanagers/linuxgsm-docker:latest
+RUN sudo apt update -y && sudo apt upgrade -y && sudo apt autoremove -y
+RUN sudo apt-get install -y sudo iproute2 netcat nano mc p7zip-rar p7zip-full
+RUN sudo useradd -m -p $(perl -e 'print crypt($ARGV[0], "password")' 'SecurePassword') hl2dmserver
+RUN sudo usermod -aG sudo hl2dmserver
+WORKDIR /home/hl2dmserver
+RUN sudo su hl2dmserver
+RUN sudo dpkg --add-architecture i386; sudo apt update; sudo apt install curl wget file tar bzip2 gzip unzip bsdmainutils python3 util-linux ca-certificates binutils bc jq tmux netcat lib32gcc1 lib32stdc++6 libsdl2-2.0-0:i386 steamcmd
+RUN sudo chmod -R 777 .
+RUN wget -O linuxgsm.sh https://linuxgsm.sh && sudo chmod +x linuxgsm.sh && bash linuxgsm.sh hl2dmserver
+RUN ./hl2dmserver auto-install
+RUN cat /home/hl2dmserver/lgsm/config-lgsm/hl2dmserver/_default.cfg | sudo tee -a /home/hl2dmserver/lgsm/config-lgsm/hl2dmserver/hl2dmserver.cfg
+RUN sudo sed -i 's+0.0.0.0+10.1.1.1+g' /home/hl2dmserver/lgsm/config-lgsm/hl2dmserver/hl2dmserver.cfg
+CMD [ "/home/hl2dmserver/hl2dmserver", "start" ]

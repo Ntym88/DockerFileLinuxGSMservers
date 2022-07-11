@@ -1,0 +1,14 @@
+FROM gameservermanagers/linuxgsm-docker:latest
+RUN sudo apt update -y && sudo apt upgrade -y && sudo apt autoremove -y
+RUN sudo apt-get install -y sudo iproute2 netcat nano mc p7zip-rar p7zip-full
+RUN sudo useradd -m -p $(perl -e 'print crypt($ARGV[0], "password")' '1q2w3e4r5t6y7u8i9o0p') q3server
+RUN sudo usermod -aG sudo q3server
+WORKDIR /home/q3server
+RUN sudo su q3server
+RUN sudo dpkg --add-architecture i386; sudo apt update; sudo apt install curl wget file tar bzip2 gzip unzip bsdmainutils python3 util-linux ca-certificates binutils bc jq tmux netcat lib32gcc-s1 lib32stdc++6
+RUN sudo chmod -R 777 .
+RUN wget -O linuxgsm.sh https://linuxgsm.sh && sudo chmod +x linuxgsm.sh && bash linuxgsm.sh q3server
+RUN ./q3server auto-install
+RUN cat /home/q3server/lgsm/config-lgsm/q3server/_default.cfg | sudo tee -a /home/q3server/lgsm/config-lgsm/q3server/q3server.cfg
+RUN sudo sed -i 's+0.0.0.0+10.1.1.1+g' /home/q3server/lgsm/config-lgsm/q3server/q3server.cfg
+CMD [ "/home/q3server/q3server", "start" ]

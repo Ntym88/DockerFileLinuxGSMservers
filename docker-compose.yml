@@ -1,14 +1,14 @@
 version: '3'
 services:
   quake3:
+    network_mode: host
     build:
       context: .
       dockerfile: Dockerfile.quake3
-    ports:
-      - '27960:27960'
-  hl2:
+    image: quake3fromlgsm
+  hl2dm:
+    network_mode: host
     build:
       context: .
       dockerfile: Dockerfile.hl2dm
-    ports:
-      - '27960:27960'
+    image: hl2dmfromlgsm
